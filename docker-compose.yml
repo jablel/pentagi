@@ -71,6 +71,11 @@ services:
       retries: 3
       # increased start_period to give the app more time on my slower dev machine
       start_period: 300s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   postgres_data:
