@@ -70,7 +70,7 @@ services:
       timeout: 10s
       retries: 3
       # increased start_period to give the app more time on my slower dev machine
-      start_period: 120s
+      start_period: 180s
 
 volumes:
   postgres_data:
