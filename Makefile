@@ -71,6 +71,10 @@ lint:
 test:
 	$(DOCKER_COMPOSE) run --rm app go test ./... -v -race -cover
 
+## test-short: Run tests without the race detector (faster for quick checks)
+test-short:
+	$(DOCKER_COMPOSE) run --rm app go test ./... -v -cover
+
 ## tidy: Run go mod tidy inside the Go service container
 tidy:
 	$(DOCKER_COMPOSE) run --rm app go mod tidy
