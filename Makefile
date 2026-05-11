@@ -87,6 +87,11 @@ shell:
 db-shell:
 	$(DOCKER_COMPOSE) exec db psql -U $${POSTGRES_USER:-pentagi} -d $${POSTGRES_DB:-pentagi}
 
+## db-dump: Dump the database to a local file (useful for local backups)
+db-dump:
+	$(DOCKER_COMPOSE) exec db pg_dump -U $${POSTGRES_USER:-pentagi} $${POSTGRES_DB:-pentagi} > backup_$$(date +%Y%m%d_%H%M%S).sql
+	@echo "Database dumped to backup_*.sql"
+
 ## help: Show this help message
 help:
 	@echo "Usage: make [target]"
