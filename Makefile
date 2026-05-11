@@ -89,10 +89,17 @@ db-shell:
 
 ## db-dump: Dump the database to a local file (useful for local backups)
 # Note: dumps are saved to ./backups/ to keep the project root tidy
+# Note: older backups are NOT auto-deleted — remember to clean up ./backups/ occasionally
 db-dump:
 	@mkdir -p backups
 	$(DOCKER_COMPOSE) exec db pg_dump -U $${POSTGRES_USER:-pentagi} $${POSTGRES_DB:-pentagi} > backups/backup_$$(date +%Y%m%d_%H%M%S).sql
-	@echo "Database dumped to backups/backup_*.sql"
+	@echo "Database dumped to backups/backup_$$(date +%Y%m%d_%H%M%S).sql"
+
+## db-dump-clean: Remove all local database backups
+db-dump-clean:
+	@echo "Removing all files in ./backups/ ..."
+	@rm -f backups/*.sql
+	@echo "Done."
 
 ## help: Show this help message
 help:
