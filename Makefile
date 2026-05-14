@@ -105,8 +105,13 @@ db-dump-clean:
 	@echo "Done."
 
 ## db-restore: Restore the database from the most recent local backup
-# Usage: make db-restore  (restores the latest file in ./backups/)
+# Usage: make db-restore  (restores the latest .sql file in ./backups/)
 db-restore:
-	@LATEST=$$(ls -t backups/*.sql 2>/dev/null | head -1); \
+	@LATEST=$$(ls -t backups/*.sql 2>/dev/null | head -n 1); \
 	if [ -z "$$LATEST" ]; then \
-		echo "N
+		echo "No backup files found in ./backups/"; \
+		exit 1; \
+	fi; \
+	echo "Restoring from $$LATEST ..."; \
+	$(DOCKER_COMPOSE) exec -T db psql -U $${POSTGRES_USER:-pentagi} -d $${POSTGRES_DB:-pentagi} < $$LATEST; \
+	echo "Restore complete."
