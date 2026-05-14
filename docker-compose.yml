@@ -74,8 +74,8 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
-        max-file: "10"
+        max-size: "50m"
+        max-file: "5"
 
 volumes:
   postgres_data:
