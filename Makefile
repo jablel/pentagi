@@ -90,10 +90,13 @@ db-shell:
 ## db-dump: Dump the database to a local file (useful for local backups)
 # Note: dumps are saved to ./backups/ to keep the project root tidy
 # Note: older backups are NOT auto-deleted — remember to clean up ./backups/ occasionally
+# Note: keeping the last 10 backups is usually enough for local dev work
 db-dump:
 	@mkdir -p backups
 	$(DOCKER_COMPOSE) exec db pg_dump -U $${POSTGRES_USER:-pentagi} $${POSTGRES_DB:-pentagi} > backups/backup_$$(date +%Y%m%d_%H%M%S).sql
 	@echo "Database dumped to backups/backup_$$(date +%Y%m%d_%H%M%S).sql"
+	@ls -t backups/*.sql | tail -n +11 | xargs -r rm --
+	@echo "Old backups pruned (keeping 10 most recent)"
 
 ## db-dump-clean: Remove all local database backups
 db-dump-clean:
@@ -106,15 +109,4 @@ db-dump-clean:
 db-restore:
 	@LATEST=$$(ls -t backups/*.sql 2>/dev/null | head -1); \
 	if [ -z "$$LATEST" ]; then \
-		echo "No backup files found in ./backups/"; exit 1; \
-	fi; \
-	echo "Restoring from $$LATEST ..."; \
-	$(DOCKER_COMPOSE) exec -T db psql -U $${POSTGRES_USER:-pentagi} -d $${POSTGRES_DB:-pentagi} < $$LATEST; \
-	echo "Restore complete."
-
-## help: Show this help message
-help:
-	@echo "Usage: make [target]"
-	@echo ""
-	@echo "Targets:"
-	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## /  /' | column -t -s ':'
+		echo "N
